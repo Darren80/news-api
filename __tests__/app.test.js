@@ -54,7 +54,7 @@ describe('GET app.js', () => {
 
     });
 
-    test('GET /api/article/:id', () => { //git
+    test('GET /api/article/:id', () => {
         let articleId = 1;
         
         return request(app)
@@ -76,5 +76,29 @@ describe('GET app.js', () => {
             );
         });
     });
+
+    test('GET /api/articles/:article_id/comments', () => {
+        let articleId = 1;
+        
+        return request(app)
+        .get(`/api/articles/${articleId}/comments`)
+        .expect(200)
+        .then((response) => {
+            response = response.body;
+            expect(response.length).toBeGreaterThan(0);
+            response.forEach(comment => {
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        article_id: expect.any(Number)
+                    })
+                );
+            })
+        });
+    });
+    });
 })
-});
