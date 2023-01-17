@@ -51,5 +51,28 @@ describe('GET app.js', () => {
             console.log(err);
         });;
     });
+
+    test('GET /api/article/:id', () => {
+        let articleId = 1;
+        
+        return request(app)
+        .get(`/api/article/${articleId}`)
+        .expect(200)
+        .then((response) => {
+            response = response.body[0];
+            expect(response).toEqual(
+                expect.objectContaining({
+                    article_id: articleId,
+                    title: expect.any(String),
+                    topic: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number),
+                    article_img_url: expect.any(String)
+                })
+            );
+        });
+    });
 })
 });
