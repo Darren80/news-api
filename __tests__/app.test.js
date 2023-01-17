@@ -54,7 +54,7 @@ describe('GET app.js', () => {
 
     });
 
-    test('GET /api/article/:id', () => {
+    test('GET /api/article/:id', () => { //git
         let articleId = 1;
         
         return request(app)
