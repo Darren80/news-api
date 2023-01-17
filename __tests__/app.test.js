@@ -10,6 +10,8 @@ describe('GET app.js', () => {
         .expect(200)
         .then((response) => {
             response = response.body;
+
+            expect(response.length).toBeGreaterThan(0);
             response.forEach(element => {
                 expect(element).toEqual(
                     expect.objectContaining({
@@ -31,6 +33,8 @@ describe('GET app.js', () => {
         .expect(200)
         .then((response) => {
             response = response.body;
+
+            expect(response.length).toBeGreaterThan(0);
             response.forEach(element => {
                 expect(element).toEqual(
                     expect.objectContaining({
@@ -47,9 +51,7 @@ describe('GET app.js', () => {
             });
             
         })
-        .catch(err => {
-            console.log(err);
-        });;
+
     });
 
     test('GET /api/article/:id', () => {

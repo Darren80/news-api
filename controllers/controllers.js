@@ -1,28 +1,24 @@
-const format = require('pg-format');
-const db = require('../db/connection');
+const { fetchTopics, fetchArticles, fetchArticleById } = require('../models/models.js')
 
-const fetchTopics = () => { 
-    return db.query('SELECT * FROM topics;')
-    .then(topics => {
-        return topics.rows;
-    })
+const getTopics = (req, res) => { 
+    fetchTopics().then(data => {
+        res.status(200).send(data); 
+    });
 }
 
-const fetchArticles = () => { 
-    return db.query('SELECT * FROM articles;')
-    .then(topics => {
-        return topics.rows;
-    })
+const getArticles = (req, res) => { 
+    fetchArticles().then(data => {
+        return res.status(200).send(data);
+    });
 }
 
-const fetchArticleById = (id) => { 
-    id = [id];
-    return db.query('SELECT * FROM articles WHERE article_id = $1;', id)
-    .then(topics => {
-        return topics.rows;
-    })
+const getArticleById = (req, res) => {
+    const id = Number(req.params.id);
+    fetchArticleById(id).then(data => {
+        return res.status(200).send(data);
+    });
 }
 
 module.exports = {
-    fetchTopics, fetchArticles, fetchArticleById
+    getTopics, getArticles, getArticleById
 }
