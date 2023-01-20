@@ -24,6 +24,7 @@ const fetchComments = () => {
 const fetchCommentsByArticleId = (article_id) => {
     return db.query('SELECT * FROM comments WHERE article_id = $1;', [article_id])
     .then(comments => {
+        comments.rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         return comments.rows;
     })
     .catch(err => {
@@ -42,7 +43,6 @@ const fetchArticles = () => {
         for (let article of articles) {
             let comment_count = comments.reduce((sum, comment) => {
                 if (comment.article_id === article.article_id) {
-                    console.log("Ding");
                     return sum + 1;
                 } else {
                     return sum;
@@ -55,8 +55,7 @@ const fetchArticles = () => {
 }
 
 const fetchArticleById = (id) => { 
-    id = [id];
-    return db.query('SELECT * FROM articles WHERE article_id = $1;', id)
+    return db.query('SELECT * FROM articles WHERE article_id = $1;', [id])
     .then(topics => {
         return topics.rows;
     })
@@ -65,6 +64,26 @@ const fetchArticleById = (id) => {
     });
 }
 
+const writeComment = (article_id, comment) => {
+    console.log(comment, '<-- comment');
+    let query = format(`INSERT INTO
+    comments (body, author, article_id)
+    VALUES ($1, $2, $3) RETURNING *;`);
+    return db.query(query, [comment.body, comment.username, article_id])
+    .then(comment => {
+        return comment.rows[0];
+    });
+}
+
+const updateArticleVote = (article_id, inc_votes) => {
+    // console.log(article_id, inc_votes, typeof article_id, typeof inc_votes);
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id]);
+}
+
+const fetchUsers = () => {
+    return db.query('SELECT * FROM users;')
+}
+
 module.exports = {
-    fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId
+    fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, writeComment, updateArticleVote, fetchUsers
 }
