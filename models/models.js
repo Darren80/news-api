@@ -11,18 +11,33 @@ const fetchTopics = () => {
     });
 }
 
+const fetchComments = () => {
+    return db.query('SELECT * FROM comments;')
+    .then(comments => {
+        return comments.rows;
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
+
+const fetchCommentsByArticleId = (article_id) => {
+    return db.query('SELECT * FROM comments WHERE article_id = $1;', [article_id])
+    .then(comments => {
+        return comments.rows;
+    })
+    .catch(err => {
+        console.log(err);
+    });
+}
+
 const fetchArticles = () => { 
     let prom1 = db.query('SELECT * FROM articles;')
     .then(topics => {
         return topics.rows;
     });
 
-    let prom2 = db.query('SELECT * FROM comments;')
-    .then(comments => {
-        return comments.rows;
-    });
-
-    return Promise.all([prom1, prom2])
+    return Promise.all([prom1, fetchComments()])
     .then(([articles, comments]) => {
         for (let article of articles) {
             let comment_count = comments.reduce((sum, comment) => {
@@ -51,5 +66,5 @@ const fetchArticleById = (id) => {
 }
 
 module.exports = {
-    fetchTopics, fetchArticles, fetchArticleById
+    fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId
 }
