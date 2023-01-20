@@ -5,6 +5,11 @@ const listen = require('./listen');
 const app = express();
 app.use(express.json());
 
+app.use((err, req, res, next) => {
+    console.error(err.stack)
+    res.status(500).send(err)
+    next();
+  })
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);

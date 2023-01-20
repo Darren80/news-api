@@ -4,11 +4,17 @@ const getTopics = (req, res) => {
     fetchTopics().then(data => {
         res.status(200).send(data); 
     })
+    .catch(err => {
+        throw err;
+    })
 }
 
 const getArticles = (req, res) => { 
     fetchArticles().then(data => {
         res.status(200).send(data);
+    })
+    .catch(err => {
+        throw err;
     })
 }
 
@@ -17,12 +23,18 @@ const getArticleById = (req, res) => {
     fetchArticleById(id).then(data => {
         res.status(200).send(data);
     })
+    .catch(err => {
+        throw err;
+    })
 }
 
 const getCommentsByArticleId = (req, res) => {
     const article_id = Number(req.params.article_id);
     fetchCommentsByArticleId(article_id).then(data => {
         res.status(200).send(data);
+    })
+    .catch(err => {
+        throw err;
     })
 }
 
@@ -32,6 +44,9 @@ const postComment = (req, res) => {
 
     writeComment(article_id, comment).then(data => {
         res.status(201).send(data);
+    })
+    .catch(err => {
+        throw err;
     })
 }
 
@@ -44,13 +59,19 @@ const patchArticleVote = (req, res) => {
     updateArticleVote(article_id, inc_votes).then(data => {
         // console.log(req.body);
         res.status(201).send(data);
-    });
+    })
+    .catch(err => {
+        throw err;
+    })
 }
 
 const getUsers = (req, res) => {
     fetchUsers().then(data => {
         res.status(200).send(data);
-    });
+    })
+    .catch(err => {
+        throw err;
+    })
 }
 
 module.exports = {

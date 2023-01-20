@@ -36,7 +36,10 @@ const fetchArticles = () => {
     let prom1 = db.query('SELECT * FROM articles;')
     .then(topics => {
         return topics.rows;
-    });
+    })
+    .catch(err => {
+        console.log(err);
+    });;
 
     return Promise.all([prom1, fetchComments()])
     .then(([articles, comments]) => {
@@ -51,6 +54,9 @@ const fetchArticles = () => {
             article.comment_count = comment_count;
         }
         return articles;
+    })
+    .catch(err => {
+        console.log(err);
     })
 }
 
@@ -77,11 +83,17 @@ const writeComment = (article_id, comment) => {
 
 const updateArticleVote = (article_id, inc_votes) => {
     // console.log(article_id, inc_votes, typeof article_id, typeof inc_votes);
-    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id]);
+    return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id])
+    .catch(err => {
+        console.log(err);
+    });
 }
 
 const fetchUsers = () => {
     return db.query('SELECT * FROM users;')
+    .catch(err => {
+        console.log(err);
+    });
 }
 
 module.exports = {
