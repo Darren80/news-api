@@ -21,6 +21,9 @@ const getArticles = (req, res) => {
 const getArticleById = (req, res) => {
     const id = Number(req.params.id);
     fetchArticleById(id).then(data => {
+        if (data.length === 0) {
+            res.status(404).send('No articles found'); return;
+        }
         res.status(200).send(data);
     })
     .catch(err => {
@@ -31,6 +34,9 @@ const getArticleById = (req, res) => {
 const getCommentsByArticleId = (req, res) => {
     const article_id = Number(req.params.article_id);
     fetchCommentsByArticleId(article_id).then(data => {
+        if (data.length === 0) {
+            res.status(404).send('No comments associated with this article'); return;
+        }
         res.status(200).send(data);
     })
     .catch(err => {
@@ -53,7 +59,6 @@ const postComment = (req, res) => {
 const patchArticleVote = (req, res) => {
     const article_id = Number(req.params.article_id);
     const inc_votes = req.body.inc_votes;
-    console.log(article_id, inc_votes, req.params);
     
 
     updateArticleVote(article_id, inc_votes).then(data => {

@@ -34,8 +34,8 @@ const fetchCommentsByArticleId = (article_id) => {
 
 const fetchArticles = () => { 
     let prom1 = db.query('SELECT * FROM articles;')
-    .then(topics => {
-        return topics.rows;
+    .then(articles => {
+        return articles.rows;
     })
     .catch(err => {
         console.log(err);
@@ -71,7 +71,6 @@ const fetchArticleById = (id) => {
 }
 
 const writeComment = (article_id, comment) => {
-    console.log(comment, '<-- comment');
     let query = format(`INSERT INTO
     comments (body, author, article_id)
     VALUES ($1, $2, $3) RETURNING *;`);

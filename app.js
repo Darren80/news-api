@@ -6,10 +6,10 @@ const app = express();
 app.use(express.json());
 
 app.use((err, req, res, next) => {
-    console.error(err.stack)
-    res.status(500).send(err)
-    next();
-  })
+  console.error(err.stack);
+  res.status(500).send(err);
+  next();
+});
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
@@ -21,6 +21,7 @@ app.patch('/api/articles/:article_id', patchArticleVote);
 
 app.get('/api/users', getUsers)
 
-listen(app);
+const { PORT = 9090 } = process.env;
+listen(app, PORT);
 
 module.exports = app;

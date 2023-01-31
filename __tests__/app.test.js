@@ -2,6 +2,7 @@ const request = require('supertest');
 const app = require('../app');
 const seed = require('../db/seeds/seed.js');
 const testData = require('../db/data/test-data/index');
+const { response } = require('../app');
 
 beforeEach(() => {
     return seed(testData);
@@ -28,9 +29,6 @@ describe('app', () => {
                     });
 
                 })
-                .catch(err => {
-                    console.log(err);
-                });
         });
 
         test('GET /api/articles', () => {
@@ -60,15 +58,14 @@ describe('app', () => {
 
         });
 
-        test('GET /api/article/:id', () => {
+        test('should respond with the requested article, GET /api/article/:id', () => {
             let articleId = 1;
 
             return request(app)
                 .get(`/api/article/${articleId}`)
                 .expect(200)
-                .then((response) => {
-                    response = response.body[0];
-                    expect(response).toEqual(
+                .then(({body}) => {
+                    expect(body[0]).toEqual(
                         expect.objectContaining({
                             article_id: articleId,
                             title: expect.any(String),
@@ -83,7 +80,18 @@ describe('app', () => {
                 });
         });
 
-        test('GET /api/articles/:article_id/comments', () => {
+        test('should respond with error message when article does not exist, GET /api/article/:id', () => {
+            let articleId = 9999;
+            
+            return request(app)
+            .get(`/api/article/${articleId}`)
+            .expect(404)
+            .then(({body}) => {
+                expect(body).toEqual({});
+            })
+        });
+
+        test('should return an array of comments for a given articleID, GET /api/articles/:article_id/comments', () => {
             let articleId = 1;
 
             return request(app)
@@ -105,6 +113,16 @@ describe('app', () => {
                         );
                     })
                 });
+        });
+
+        test('should respond with an error message when article does not exist, GET /api/articles/:article_id/comments', () => {
+            let articleId = 9999;
+            return request(app)
+            .get(`/api/articles/${articleId}/comments`)
+            .expect(404)
+            .then(({body}) => {
+                expect(body).toEqual({});
+            })
         });
     });
 

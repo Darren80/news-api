@@ -1,5 +1,7 @@
-const listen = (app) => {
-    app.listen(3000, () => {});
+const listen = (app, PORT) => {
+    app.listen(PORT, () => {
+        console.log(`Listening on ${PORT}...`)
+    });
 }
 
 module.exports = listen;
