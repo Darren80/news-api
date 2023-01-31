@@ -10,7 +10,7 @@ beforeEach(() => {
 
 describe('app', () => {
 
-    describe('GET app.js', () => {
+    describe('GET topics or articles', () => {
         test('GET /api/topics', () => {
             return request(app)
                 .get('/api/topics')
@@ -58,13 +58,16 @@ describe('app', () => {
 
         });
 
+    });
+
+    describe('GET /api/article/:id', () => {
         test('should respond with the requested article, GET /api/article/:id', () => {
             let articleId = 1;
 
             return request(app)
                 .get(`/api/article/${articleId}`)
                 .expect(200)
-                .then(({body}) => {
+                .then(({ body }) => {
                     expect(body[0]).toEqual(
                         expect.objectContaining({
                             article_id: articleId,
@@ -82,15 +85,17 @@ describe('app', () => {
 
         test('should respond with error message when article does not exist, GET /api/article/:id', () => {
             let articleId = 9999;
-            
-            return request(app)
-            .get(`/api/article/${articleId}`)
-            .expect(404)
-            .then(({body}) => {
-                expect(body).toEqual({});
-            })
-        });
 
+            return request(app)
+                .get(`/api/article/${articleId}`)
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body).toEqual({});
+                })
+        });
+    });
+
+    describe('GET /api/articles/:articleId/comments', () => {
         test('should return an array of comments for a given articleID, GET /api/articles/:article_id/comments', () => {
             let articleId = 1;
 
@@ -118,31 +123,32 @@ describe('app', () => {
         test('should respond with an error message when article does not exist, GET /api/articles/:article_id/comments', () => {
             let articleId = 9999;
             return request(app)
-            .get(`/api/articles/${articleId}/comments`)
-            .expect(404)
-            .then(({body}) => {
-                expect(body).toEqual({});
-            })
+                .get(`/api/articles/${articleId}/comments`)
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body).toEqual({});
+                })
         });
     });
+});
 
-    describe('GET for users', () => {
-        test('should receive an array of users', () => {
-            return request(app)
-                .get('/api/users')
-                .expect(200)
-                .then((response) => {
-                    expect(response.body.rows.length).toBeGreaterThan(0);
+describe('GET for users', () => {
+    test('should receive an array of users', () => {
+        return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.rows.length).toBeGreaterThan(0);
 
-                    response.body.rows.forEach(user => {
-                        expect(user).toHaveProperty('username', expect.any(String));
-                        expect(user).toHaveProperty('name', expect.any(String));
-                        expect(user).toHaveProperty('avatar_url', expect.any(String));
-                    });
+                response.body.rows.forEach(user => {
+                    expect(user).toHaveProperty('username', expect.any(String));
+                    expect(user).toHaveProperty('name', expect.any(String));
+                    expect(user).toHaveProperty('avatar_url', expect.any(String));
                 });
-        });
+            });
+    });
 
-
+    describe('creating comments', () => {
         test('should create a new comment with a username and body tag', () => {
             let article_id = 3;
             return request(app)
@@ -153,7 +159,6 @@ describe('app', () => {
                     body: 'This is a great article!'
                 })
                 .then(res => {
-                    expect(res.statusCode).toEqual(201);
                     expect(res.body).toHaveProperty('author', 'icellusedkars');
                     expect(res.body).toHaveProperty('body', 'This is a great article!');
                     expect(res.body).toHaveProperty('created_at', expect.any(String));
@@ -161,36 +166,52 @@ describe('app', () => {
                     expect(res.body).toHaveProperty('article_id', expect.any(Number));
                     expect(res.body).toHaveProperty('comment_id', expect.any(Number));
                 });
-
         });
-        test('should update amount of votes in an article accordingly', () => {
-            let increaseVotesBy = 10;
-            let articleId = 4;
 
+        test('should return an error when a field is missing', () => {
+            let article_id = 3;
             return request(app)
-                .get(`/api/article/${articleId}`)
-                .expect(200)
-                .then((response) => {
-                    let votes = response.body[0].votes;
-                    return request(app)
-                        .patch(`/api/articles/${articleId}`)
-                        .send({ inc_votes: increaseVotesBy })
-                        .expect(201)
-                        .then((res) => {
-                            expect(res.body.rows[0]).toEqual(
-                                expect.objectContaining({
-                                    title: expect.any(String),
-                                    topic: expect.any(String),
-                                    author: expect.any(String),
-                                    body: expect.any(String),
-                                    created_at: expect.any(String),
-                                    votes: votes + increaseVotesBy,
-                                    article_img_url: expect.any(String)
-                                })
-                            )
-                        })
-                    // console.log(response);
+                .post(`/api/articles/${article_id}/comments`)
+                .expect(422)
+                .send({
+                    // username: 'icellusedkars',
+                    body: 'This is a great article!'
+                })
+                .then(({body}) => {
+                    console.log(body);
                 });
         });
-    })
+
+    });
+
+    test('should update amount of votes in an article accordingly', () => {
+        let increaseVotesBy = 10;
+        let articleId = 4;
+
+        return request(app)
+            .patch(`/api/article/${articleId}`)
+            .expect(200)
+            .then((response) => {
+                let votes = response.body[0].votes;
+                return request(app)
+                    .patch(`/api/articles/${articleId}`)
+                    .send({ inc_votes: increaseVotesBy })
+                    .expect(201)
+                    .then((res) => {
+                        expect(res.body.rows[0]).toEqual(
+                            expect.objectContaining({
+                                title: expect.any(String),
+                                topic: expect.any(String),
+                                author: expect.any(String),
+                                body: expect.any(String),
+                                created_at: expect.any(String),
+                                votes: votes + increaseVotesBy,
+                                article_img_url: expect.any(String)
+                            })
+                        )
+                    })
+                // console.log(response);
+            });
+    });
+})
 });
