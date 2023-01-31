@@ -71,12 +71,16 @@ const fetchArticleById = (id) => {
 }
 
 const writeComment = (article_id, comment) => {
-    if (!comment.username || !comment.body) { return 'Feild missing.' }
+    
 
     let query = format(`INSERT INTO
     comments (body, author, article_id)
     VALUES ($1, $2, $3) RETURNING *;`);
-    return db.query(query, [comment.body, comment.username, article_id])
+    return new Promise((resolve, reject) => {
+        if (!comment.username || !comment.body) { reject('Feild missing.') }
+        resolve();
+    })
+    .then(() => db.query(query, [comment.body, comment.username, article_id]))
     .then(comment => {
         return comment.rows[0];
     });

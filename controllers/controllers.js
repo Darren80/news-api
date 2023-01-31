@@ -49,11 +49,10 @@ const postComment = (req, res) => {
     const comment = req.body;
 
     writeComment(article_id, comment).then(data => {
-        if (!Array.isArray(data)) { res.status(422).send(data) }
         res.status(201).send(data);
     })
     .catch(err => {
-        throw err;
+        res.status(422).send(err)
     })
 }
 
