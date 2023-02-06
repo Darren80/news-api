@@ -5,12 +5,6 @@ const listen = require('./listen');
 const app = express();
 app.use(express.json());
 
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send(err);
-  next();
-});
-
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/article/:id', getArticleById);
@@ -21,7 +15,13 @@ app.patch('/api/articles/:article_id', patchArticleVote);
 
 app.get('/api/users', getUsers)
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send(err);
+  next();
+});
+
 const { PORT = 9090 } = process.env;
 listen(app, PORT);
 
-module.exports = app;
+module.exports = { app, PORT };
