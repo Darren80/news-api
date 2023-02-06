@@ -39,12 +39,15 @@ const postComment = (req, res) => {
     writeComment(article_id, comment).then(data => {
         res.status(201).send(data);
     })
+    .catch(err => {
+        res.status(422).send(err)
+    })
 }
 
 const patchArticleVote = (req, res) => {
     const article_id = Number(req.params.article_id);
     const inc_votes = req.body.inc_votes;
-    
+    console.log(article_id, inc_votes);
 
     updateArticleVote(article_id, inc_votes).then(data => {
         // console.log(req.body);

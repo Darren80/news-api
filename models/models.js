@@ -54,10 +54,10 @@ const fetchArticleById = (id) => {
 
 const writeComment = (article_id, comment) => {
     
-
     let query = format(`INSERT INTO
     comments (body, author, article_id)
     VALUES ($1, $2, $3) RETURNING *;`);
+
     return new Promise((resolve, reject) => {
         if (!comment.username || !comment.body) { reject('Feild missing.') }
         resolve();
@@ -74,7 +74,7 @@ const updateArticleVote = (article_id, inc_votes) => {
 }
 
 const fetchUsers = () => {
-    return db.query('SELECT * FROM users;')
+    return db.query('SELECT * FROM users;');
 }
 
 module.exports = {
