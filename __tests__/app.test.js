@@ -239,7 +239,7 @@ describe('GET for users', () => {
                 return request(app)
                     .patch(`/api/articles/${articleId}`)
                     .send({ inc_votes: 'abc' })
-                    .expect(404);
+                    .expect(422);
                 // console.log(response);
             });
     });
