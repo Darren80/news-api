@@ -22,6 +22,5 @@ app.use((err, req, res, next) => {
 });
 
 const { PORT = 9090 } = process.env;
-listen(app, PORT);
 
 module.exports = { app, PORT };
