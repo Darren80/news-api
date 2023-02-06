@@ -4,17 +4,11 @@ const getTopics = (req, res) => {
     fetchTopics().then(data => {
         res.status(200).send(data); 
     })
-    .catch(err => {
-        throw err;
-    })
 }
 
 const getArticles = (req, res) => { 
     fetchArticles().then(data => {
         res.status(200).send(data);
-    })
-    .catch(err => {
-        throw err;
     })
 }
 
@@ -26,9 +20,6 @@ const getArticleById = (req, res) => {
         }
         res.status(200).send(data);
     })
-    .catch(err => {
-        throw err;
-    })
 }
 
 const getCommentsByArticleId = (req, res) => {
@@ -39,9 +30,6 @@ const getCommentsByArticleId = (req, res) => {
         }
         res.status(200).send(data);
     })
-    .catch(err => {
-        throw err;
-    })
 }
 
 const postComment = (req, res) => {
@@ -50,9 +38,6 @@ const postComment = (req, res) => {
 
     writeComment(article_id, comment).then(data => {
         res.status(201).send(data);
-    })
-    .catch(err => {
-        res.status(422).send(err)
     })
 }
 
@@ -65,17 +50,11 @@ const patchArticleVote = (req, res) => {
         // console.log(req.body);
         res.status(201).send(data);
     })
-    .catch(err => {
-        throw err;
-    })
 }
 
 const getUsers = (req, res) => {
     fetchUsers().then(data => {
         res.status(200).send(data);
-    })
-    .catch(err => {
-        throw err;
     })
 }
 

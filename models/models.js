@@ -6,9 +6,6 @@ const fetchTopics = () => {
     .then(topics => {
         return topics.rows;
     })
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 const fetchComments = () => {
@@ -16,9 +13,6 @@ const fetchComments = () => {
     .then(comments => {
         return comments.rows;
     })
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 const fetchCommentsByArticleId = (article_id) => {
@@ -27,9 +21,6 @@ const fetchCommentsByArticleId = (article_id) => {
         comments.rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         return comments.rows;
     })
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 const fetchArticles = () => { 
@@ -37,9 +28,6 @@ const fetchArticles = () => {
     .then(articles => {
         return articles.rows;
     })
-    .catch(err => {
-        console.log(err);
-    });;
 
     return Promise.all([prom1, fetchComments()])
     .then(([articles, comments]) => {
@@ -55,9 +43,6 @@ const fetchArticles = () => {
         }
         return articles;
     })
-    .catch(err => {
-        console.log(err);
-    })
 }
 
 const fetchArticleById = (id) => { 
@@ -65,9 +50,6 @@ const fetchArticleById = (id) => {
     .then(topics => {
         return topics.rows;
     })
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 const writeComment = (article_id, comment) => {
@@ -89,16 +71,10 @@ const writeComment = (article_id, comment) => {
 const updateArticleVote = (article_id, inc_votes) => {
     // console.log(article_id, inc_votes, typeof article_id, typeof inc_votes);
     return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, [inc_votes, article_id])
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 const fetchUsers = () => {
     return db.query('SELECT * FROM users;')
-    .catch(err => {
-        console.log(err);
-    });
 }
 
 module.exports = {

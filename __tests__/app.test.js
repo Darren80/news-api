@@ -177,11 +177,24 @@ describe('GET for users', () => {
                     // username: 'icellusedkars',
                     body: 'This is a great article!'
                 })
-                .then(({body}) => {
+                .then(({ body }) => {
                     console.log(body);
                 });
         });
 
+        test('should return an error when a field is missing', () => {
+            let article_id = 3;
+            return request(app)
+                .post(`/api/articles/${article_id}/comments`)
+                .expect(422)
+                .send({
+                    username: 'icellusedkars',
+                    // body: 'This is a great article!'
+                })
+                .then(({ body }) => {
+                    console.log(body);
+                });
+        });
     });
 
     test('should update amount of votes in an article accordingly', () => {
@@ -213,5 +226,21 @@ describe('GET for users', () => {
                 // console.log(response);
             });
     });
+
+    test('should return an error when inc_votes is not sent or malformed', () => {
+        let increaseVotesBy = 10;
+        let articleId = 4;
+
+        return request(app)
+            .get(`/api/article/${articleId}`)
+            .expect(200)
+            .then((response) => {
+                let votes = response.body[0].votes;
+                return request(app)
+                    .patch(`/api/articles/${articleId}`)
+                    .send({ inc_votes: 'abc' })
+                    .expect(404);
+                // console.log(response);
+            });
+    });
 })
-});
