@@ -31,12 +31,12 @@ const fetchArticles = (column_name_to_sort_by) => {
         articles = db.query('SELECT * FROM articles;')
     }
 
-    articles.then(articles => {
+    let articlesPromise = articles.then(articles => {
         return articles.rows;
     })
 
 
-    return Promise.all([articles, fetchComments()])
+    return Promise.all([articlesPromise, fetchComments()])
         .then(([articles, comments]) => {
 
             for (let article of articles) {
