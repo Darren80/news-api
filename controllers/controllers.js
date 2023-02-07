@@ -8,8 +8,8 @@ const getTopics = (req, res) => {
 
 const getArticles = (req, res) => {
     //get query params from req
-    let { sort_by: column_name } = req.params;
-    fetchArticles().then(data => {
+    let { sort_by: column_name_to_sort_by } = req.params;
+    fetchArticles(column_name_to_sort_by).then(data => {
         res.status(200).send(data);
     })
 }
